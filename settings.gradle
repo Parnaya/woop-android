@@ -1,0 +1,3 @@
+
+rootProject.name = "WoopChat"
+include ':app'

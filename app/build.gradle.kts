@@ -1,0 +1,91 @@
+@file:Suppress("UnstableApiUsage")
+import Dependencies.*
+import com.android.build.api.variant.impl.VariantOutputImpl
+
+plugins {
+    androidApplication()
+    kotlinAndroid()
+    modulePlugin()
+}
+
+println("build arguments: $BuildArgs")
+
+android {
+    defaultConfig {
+        applicationId = BuildArgs.applicationId
+        versionCode = BuildArgs.versionCode
+        versionName = BuildArgs.versionName
+        testInstrumentationRunnerArguments.putIfAbsent("clearPackageData", "true")
+        buildConfigField("String", "STAGING_PRIVATE_API_URL", "\"${BuildArgs.stagingPrivateApiUrl}\"")
+    }
+
+    buildTypes {
+        getByName("debug") {
+            isDebuggable = true
+            applicationIdSuffix = ".dev"
+            resValue("bool", "is_debug", "true")
+            resValue("string", "app_name", "Woop Debug")
+        }
+        getByName("release") {
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
+            resValue("bool", "is_debug", "false")
+            resValue("string", "app_name", "Woop")
+        }
+    }
+
+    sourceSets {
+        getByName("debug") { java.srcDir("src/commonDebug/java") }
+        getByName("release") { java.srcDir("src/commonRelease/java") }
+    }
+
+    buildFeatures.viewBinding = true
+}
+
+androidComponents.onVariants { variant ->
+    val outputFileNamePrefix = "woop"
+    val variantName = variant.name
+    val variantOutput = variant.outputs.first() as VariantOutputImpl
+    val variantVersion = variantOutput.versionName.orNull
+    val fileName = "${outputFileNamePrefix}_${variantName}_${variantVersion}"
+    val apkFileName = "$fileName.apk"
+    variantOutput.outputFileName.set(apkFileName)
+    val taskSuffix = variantName.capitalize()
+    val bundleTaskName = "bundle${taskSuffix}"
+    afterEvaluate {
+        tasks.findByName(bundleTaskName)?.apply {
+            val oldAabName = "app-${variantName}.aab"
+            val newAabName = "${fileName}.aab"
+            val renameAabTaskName = "renameAab${taskSuffix}"
+            project.tasks.create(renameAabTaskName, Copy::class.java) {
+                description = "Renames AAB"
+                includeEmptyDirs = false
+                val bundleDir = "${project.buildDir}/outputs/bundle/${variantName}"
+                from(bundleDir) {
+                    include(oldAabName)
+                }
+                into(bundleDir)
+                rename(oldAabName, newAabName)
+                val cleanTaskName = "cleanAfterRename${taskSuffix}"
+                project.tasks.create(cleanTaskName, Delete::class.java) {
+                    delete("${bundleDir}/${oldAabName}")
+                }
+                finalizedBy(cleanTaskName)
+            }
+            finalizedBy(renameAabTaskName)
+        }
+    }
+}
+
+dependencies {
+    implementation(
+        Libs.CoreKtx,
+        Libs.Appcompat,
+        Libs.Material,
+        Libs.ConstraintLayout
+    )
+}
