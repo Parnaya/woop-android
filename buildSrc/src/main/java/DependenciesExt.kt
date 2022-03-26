@@ -17,7 +17,7 @@ private fun DependencyHandler.addDependencies(configuration: String, vararg list
 private fun DependencyHandler.addDependency(configuration: String, dependency: Dependencies) {
     fun Dependencies.notation(): Any? {
         return when (this) {
-            is Dependencies.Libs.LibSet -> null
+//            is Dependencies.Libs.LibSet -> null
             is Dependencies.Libs -> path
             else -> project(path)
         }
@@ -33,13 +33,13 @@ private fun DependencyHandler.addDependency(configuration: String, dependency: D
             )
         }
     }
-    val subDependencies = when (dependency) {
-        is Dependencies.Libs.LibSet -> dependency.libs
-        else -> listOf<Dependencies>()
-    }
-    subDependencies.forEach { subDependency ->
-        addDependency(configuration, subDependency)
-    }
+//    val subDependencies = when (dependency) {
+//        is Dependencies.Libs.LibSet -> dependency.libs
+//        else -> listOf<Dependencies>()
+//    }
+//    subDependencies.forEach { subDependency ->
+//        addDependency(configuration, subDependency)
+//    }
 }
 
 

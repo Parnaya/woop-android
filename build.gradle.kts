@@ -11,6 +11,7 @@ buildscript {
     dependencies {
         classpath("com.android.tools.build:gradle:7.1.2")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${Versions.kotlin}")
+        classpath("com.google.protobuf:protobuf-gradle-plugin:0.8.17")
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -62,3 +63,7 @@ allprojects {
 tasks.register("clean", Delete::class) {
     delete(rootProject.buildDir)
 }
+
+//project.exec {
+//    commandLine = "protoc --java_out=app/src/main/java/com/example/woopchat/proto_model app/src/main/proto/entiny.proto".split(" ")
+//}

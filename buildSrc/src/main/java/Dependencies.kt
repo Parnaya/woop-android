@@ -32,6 +32,17 @@ sealed class Dependencies(
         object LoggingInterceptor : Libs("com.squareup.okhttp3:logging-interceptor:${Versions.Libs.okhttp}")
         object Retrofit : Libs("com.squareup.retrofit2:retrofit:${Versions.Libs.retrofit}")
         object ConverterGson : Libs("com.squareup.retrofit2:converter-gson:${Versions.Libs.retrofit}")
+        object Scarlet: Libs("com.tinder.scarlet:scarlet:${Versions.Libs.scarlet}")
+        object ScarletOkhttp: Libs("com.tinder.scarlet:websocket-okhttp:${Versions.Libs.scarlet}")
+        object ScarletLifecycleAndroid: Libs("com.tinder.scarlet:lifecycle-android:${Versions.Libs.scarlet}")
+        object ScarletAdapterCoroutines: Libs("com.tinder.scarlet:stream-adapter-coroutines:${Versions.Libs.scarlet}")
+        object ScarletAdapterProtobuf: Libs("com.tinder.scarlet:message-adapter-protobuf:${Versions.Libs.scarlet}")
+        object ScarletAdapterGson: Libs("com.tinder.scarlet:message-adapter-gson:${Versions.Libs.scarlet}")
+        object Protoc: Libs("com.google.protobuf:protoc:${Versions.Libs.protobuf}")
+        object ProtobufJava: Libs("com.google.protobuf:protobuf-java:${Versions.Libs.protobuf}")
+        object ProtobufKotlin: Libs("com.google.protobuf:protobuf-kotlin:${Versions.Libs.protobuf}")
+        object ProtobufJavalite: Libs("com.google.protobuf:protobuf-javalite:${Versions.Libs.protobuf}")
+        object ProtobufLite: Libs("com.google.protobuf:protobuf-lite:3.0.0")
 
         //jetpack
         object Annotation : Libs("androidx.annotation:annotation:${Versions.Libs.annotation}")
@@ -71,18 +82,18 @@ sealed class Dependencies(
         object ComposeRuntimeLiveData : Libs("androidx.compose.runtime:runtime-livedata:${Versions.Libs.compose}")
 
         //Compose
-        sealed class LibSet(vararg libs: Libs) : Dependencies("") {
-            val libs: List<Libs> = listOf(*libs)
-
-            object Compose : LibSet(
-                ComposeUtil,
-                ComposeUi,
-                ComposeUiTooling,
-                ComposeFoundation,
-                ComposeMaterial,
-                ComposeRuntimeLiveData
-            )
-        }
+//        sealed class LibSet(vararg libs: Libs) : Dependencies("") {
+//            val libs: List<Libs> = listOf(*libs)
+//
+//            object Compose : LibSet(
+//                ComposeUtil,
+//                ComposeUi,
+//                ComposeUiTooling,
+//                ComposeFoundation,
+//                ComposeMaterial,
+//                ComposeRuntimeLiveData
+//            )
+//        }
 
         //testing
         object Junit : Libs("junit:junit:${Versions.Libs.junit}")

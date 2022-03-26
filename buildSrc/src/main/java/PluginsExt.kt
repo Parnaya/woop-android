@@ -31,3 +31,7 @@ fun PluginDependenciesSpec.navigationSafeArgs() {
 fun PluginDependenciesSpec.crashlytics() {
     id("com.google.firebase.crashlytics")
 }
+
+fun PluginDependenciesSpec.protobuf() {
+    id("com.google.protobuf")
+}

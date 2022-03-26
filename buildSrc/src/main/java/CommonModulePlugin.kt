@@ -31,6 +31,7 @@ class CommonModulePlugin : Plugin<Project> {
                     kotlinOptions {
                         jvmTarget = Versions.java
                     }
+//                    dependsOn(":generateProto")
                 }
 
                 if (this is LibraryExtension) {

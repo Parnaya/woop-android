@@ -40,6 +40,8 @@ object Versions {
         const val threetenabp = "1.3.1"
         const val okhttp = "4.9.3"
         const val retrofit = "2.9.0"
+        const val scarlet = "0.1.12"
+        const val protobuf = "3.19.3"
         const val gson = "2.8.9"
         const val glide = "4.12.0"
         const val lottie = "4.2.1"

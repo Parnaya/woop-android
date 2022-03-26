@@ -1,11 +1,13 @@
 @file:Suppress("UnstableApiUsage")
 import Dependencies.*
 import com.android.build.api.variant.impl.VariantOutputImpl
+import com.google.protobuf.gradle.*
 
 plugins {
     androidApplication()
     kotlinAndroid()
     modulePlugin()
+    protobuf()
 }
 
 println("build arguments: $BuildArgs")
@@ -39,9 +41,19 @@ android {
     }
 
     sourceSets {
-        getByName("debug") { java.srcDir("src/commonDebug/java") }
-        getByName("release") { java.srcDir("src/commonRelease/java") }
+        getByName("main") {
+            java.srcDir("src/main/java")
+            protobuf {
+                java.srcDir("${generatedFilesBaseDir}/main/javalite")
+            }
+            java.srcDir("$projectDir/src/main/proto")
+            java.srcDir("$projectDir/src/main/protobuffers")
+        }
     }
+
+//    tasks.withType<ProcessResources> {
+//        exclude("**/*.proto")
+//    }
 
     buildFeatures.viewBinding = true
 }
@@ -86,6 +98,66 @@ dependencies {
         Libs.CoreKtx,
         Libs.Appcompat,
         Libs.Material,
-        Libs.ConstraintLayout
+        Libs.ConstraintLayout,
+        Libs.Scarlet,
+        Libs.ScarletOkhttp,
+        Libs.ScarletAdapterCoroutines,
+        Libs.ScarletAdapterProtobuf,
+        Libs.ScarletLifecycleAndroid,
+        Libs.ScarletAdapterGson,
+        Libs.Kotlin,
+        Libs.Coroutines,
+        Libs.Okhttp,
+        Libs.LoggingInterceptor,
+        Libs.LifecycleCommon,
+        Libs.LifecycleLiveDataKtx,
+        Libs.LifecycleRuntimeKtx,
+        Libs.LifecycleViewModelKtx,
+        Libs.FragmentKtx,
+        Libs.Threetenabp,
+        Libs.Protoc,
+        Libs.ProtobufJava,
+        Libs.ProtobufKotlin,
+        Libs.ProtobufJavalite,
+        Libs.ProtobufLite,
     )
 }
+
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:${Versions.Libs.protobuf}"
+    }
+    plugins {
+//        javalite {
+//
+//        }
+    }
+//    plugins {
+//        javalite {
+//            artifact = 'com.google.protobuf:protoc-gen-javalite:3.0.0'
+//        }
+//    }
+
+    generateProtoTasks {
+        all().forEach {
+            it.builtins {
+                id("kotlin")
+            }
+            it.plugins {
+                val hh = 7
+            }
+        }
+    }
+}
+
+configurations.forEach { configuration ->
+    if (configuration.name.toLowerCase().contains("proto")) {
+        configuration.attributes.attribute(Usage.USAGE_ATTRIBUTE, objects.named(Usage::class.java, "java-runtime"))
+    }
+}
+
+project.tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class.java).all {
+    mustRunAfter(project.tasks.withType(com.google.protobuf.gradle.GenerateProtoTask::class.java))
+}
+
+println(System.getenv())
