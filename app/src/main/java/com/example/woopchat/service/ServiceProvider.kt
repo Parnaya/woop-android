@@ -3,13 +3,16 @@ package com.example.woopchat.service
 import com.example.woopchat.*
 import com.tinder.scarlet.Lifecycle
 import com.tinder.scarlet.Scarlet
+import com.tinder.scarlet.messageadapter.gson.GsonMessageAdapter
 import com.tinder.scarlet.messageadapter.protobuf.ProtobufMessageAdapter
 import com.tinder.scarlet.retry.ExponentialWithJitterBackoffStrategy
 import com.tinder.scarlet.websocket.okhttp.newWebSocketFactory
 import com.tinder.streamadapter.coroutines.CoroutinesStreamAdapterFactory
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.Response
 import java.util.concurrent.TimeUnit
 
 class ServiceProvider {
@@ -39,15 +42,14 @@ class ServiceProvider {
 
         val scarlet = Scarlet.Builder()
             .webSocketFactory(okHttpClient.newWebSocketFactory(url))
-            .addMessageAdapterFactory(LoggingMessageAdapter.Factory(ProtobufMessageAdapter.Factory()))
-//            .addMessageAdapterFactory(LoggingMessageAdapter.Factory(GsonMessageAdapter.Factory()))
+            .addMessageAdapterFactory(LoggingMessageAdapter.Factory(GsonMessageAdapter.Factory()))
             .addStreamAdapterFactory(CoroutinesStreamAdapterFactory())
             .backoffStrategy(backoffStrategy)
             .lifecycle(lifecycle)
             .build()
 
         val service = scarlet.create<WebsocketService>()
-        GlobalScope.launch { //TODO
+        GlobalScope.launch { //TODO create scope only for logging
             logConnectionState(this, service.observeWebSocketEvent())
         }
         return service
