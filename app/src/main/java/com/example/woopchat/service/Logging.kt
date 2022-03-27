@@ -50,7 +50,7 @@ class LoggingMessageAdapter<T>(
         return messageAdapter.fromMessage(message)
     }
 
-    override fun toMessage(data: T): Message =messageAdapter
+    override fun toMessage(data: T): Message = messageAdapter
         .toMessage(data)
         .also {
             Log.d("=======", "SEND --> ${it.asString()}")

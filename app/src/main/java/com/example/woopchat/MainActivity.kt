@@ -20,8 +20,8 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        vimo = MainVimo(AndroidLifecycle.ofApplicationForeground(application))
-        vimo.onOpenedChat("/second")
+        vimo = MainVimo(application.assets, AndroidLifecycle.ofApplicationForeground(application))
+        vimo.onOpenedChat("/")
         ActivityMainBinding.inflate(layoutInflater).apply {
             val pagerAdapter = PagerAdapter(this@MainActivity)
             pager.currentItem = 2

@@ -104,6 +104,7 @@ dependencies {
         Libs.LifecycleViewModelKtx,
         Libs.FragmentKtx,
         Libs.Threetenabp,
+        Libs.JsonKotlinSchema,
     )
 }
 

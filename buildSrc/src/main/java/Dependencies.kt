@@ -38,6 +38,9 @@ sealed class Dependencies(
         object ScarletAdapterCoroutines: Libs("com.tinder.scarlet:stream-adapter-coroutines:${Versions.Libs.scarlet}")
         object ScarletAdapterProtobuf: Libs("com.tinder.scarlet:message-adapter-protobuf:${Versions.Libs.scarlet}")
         object ScarletAdapterGson: Libs("com.tinder.scarlet:message-adapter-gson:${Versions.Libs.scarlet}")
+        object JsonKotlinSchema: Libs("net.pwall.json:json-kotlin-schema:${Versions.Libs.jsonKotlinSchema}")
+
+        //protobuf
         object Protoc: Libs("com.google.protobuf:protoc:${Versions.Libs.protobuf}")
         object ProtobufJava: Libs("com.google.protobuf:protobuf-java:${Versions.Libs.protobuf}")
         object ProtobufKotlin: Libs("com.google.protobuf:protobuf-kotlin:${Versions.Libs.protobuf}")

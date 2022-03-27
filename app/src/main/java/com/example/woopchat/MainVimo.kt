@@ -1,5 +1,7 @@
 package com.example.woopchat
 
+import android.app.Application
+import android.content.res.AssetManager
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.example.woopchat.base.BaseVimo
@@ -12,12 +14,13 @@ import com.tinder.scarlet.Lifecycle
 import kotlinx.coroutines.delay
 
 class MainVimo(
+    assets: AssetManager,
     lifecycle: Lifecycle,
 ) : BaseVimo() {
     private val provider = ChatProvider(
         lifecycle = lifecycle,
         scope = viewModelScope,
-        serviceProvider = ServiceProvider(),
+        serviceProvider = ServiceProvider(assets),
     )
 
     fun onOpenedChat(name: String) {
@@ -29,19 +32,19 @@ class MainVimo(
             provider.updateFilters(filters)
         }
         launchBg {
-            provider.onReceiveMessage { Log.d("MESSAGE", "haha, message received: $") }
+            provider.onReceiveMessage { Log.d("MESSAGE", "haha, message received: $it") }
         }
         launchBg {
             val user = Generator.randomString()
             while (true) {
-                delay(3000)
+                delay(10000)
                 provider.sendMessage(
                     Entity(
                         id = Generator.randomString(),
-                        data = Generator.nextInt().toString(),
+                        data = Entity.Data("some text"),
                         tags = listOf(
                             "user|$user",
-                            "chat|$name",
+                            "chat|/second",
                             "type|message",
                         ),
                     )

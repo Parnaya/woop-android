@@ -44,12 +44,13 @@ class ChatProvider(
         }
     }
 
-    suspend fun onReceiveMessage(action: suspend (Entity) -> Unit) {
+    suspend fun onReceiveMessage(action: suspend (List<Entity>) -> Unit) {
         service
-            .observeEntities()
+            .observeMessages()
             .consumeAsFlow()
             .collect {
-                action.invoke(it)
+                it as WoopMessage.Entities
+                action.invoke(it.entities)
             }
     }
 
@@ -63,11 +64,11 @@ class ChatProvider(
         )
     }
 
-    private fun List<String>.revert() = WoopMessage(
-        filters = this,
+    private fun List<String>.revert() = WoopMessage.Filter(
+        filter = joinToString("&&"),
     )
 
-    private fun Entity.revert() = WoopMessage(
-        entity_create = this,
+    private fun Entity.revert() = WoopMessage.Entities(
+        entities = listOf(this),
     )
 }
