@@ -12,6 +12,7 @@ import com.example.woopchat.service.Entity
 import com.example.woopchat.service.ServiceProvider
 import com.tinder.scarlet.Lifecycle
 import kotlinx.coroutines.delay
+import org.threeten.bp.OffsetDateTime
 
 class MainVimo(
     assets: AssetManager,
@@ -41,6 +42,7 @@ class MainVimo(
                 provider.sendMessage(
                     Entity(
                         id = Generator.randomString(),
+                        createdAt = OffsetDateTime.now(),
                         data = Entity.Data("some text"),
                         tags = listOf(
                             "user|$user",

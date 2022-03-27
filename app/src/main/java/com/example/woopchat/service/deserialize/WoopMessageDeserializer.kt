@@ -8,7 +8,6 @@ import com.google.gson.JsonDeserializer
 import com.google.gson.JsonElement
 import com.google.gson.JsonObject
 import net.pwall.json.schema.JSONSchema
-import org.threeten.bp.OffsetDateTime
 import java.lang.reflect.Type
 
 class WoopMessageDeserializer(
@@ -23,22 +22,13 @@ class WoopMessageDeserializer(
             res.errors?.joinToString(" ==== ") { "${it.error} - ${it.instanceLocation}" }  ?: "null"
         )
 
-        root.str("id")
-        context.deserialize<OffsetDateTime>(root.get("createdAt"), OffsetDateTime::class.java)
-
         val entities = root.jsonArray("messages") {
+            context.deserialize<Entity>(this, Entity::class.java)
             obj("data") {
-                Entity(
-                    id = str("id"),
-                    data = Entity.Data(
-                        text = obj("data") {
-                            str("text")
-                        },
-                    ),
-                    tags = strList("tags")
-                )
+                context.deserialize<Entity>(this, Entity::class.java)
             }
         }
+
         return WoopMessage.Entities(entities)
     }
 
@@ -57,7 +47,7 @@ class WoopMessageDeserializer(
     }
 
     //region JsonObject extensions
-    private inline fun <T> JsonObject.obj(name: String, converter: JsonObject.() -> T): T {
+    private inline fun <T> JsonObject.obj(name: String, converter: JsonObject.() -> T ): T {
         return get(name)?.asJsonObject?.let(converter) ?: error("JSON object `$name` not found")
     }
 

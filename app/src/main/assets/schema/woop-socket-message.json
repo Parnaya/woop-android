@@ -27,6 +27,10 @@
                   "id": {
                     "type": "string"
                   },
+                  "createdAt": {
+                    "description": "The timestamp for a request",
+                    "type": "string"
+                  },
                   "tags": {
                     "type": "array",
                     "items": {

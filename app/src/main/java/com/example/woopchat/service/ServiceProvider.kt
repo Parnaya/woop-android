@@ -36,9 +36,9 @@ import java.util.concurrent.TimeUnit
 class ServiceProvider(
     private val assets: AssetManager,
 ) {
-//    private val host = "jusp.me"
+    private val host = "jusp.me"
 //        private val host = "localhost:1323"
-    private val host = "10.10.13.154:1323"
+//    private val host = "10.10.13.154:1323"
 
     private val url = "ws://${host}/ws"
 //    private val url = "wss://demo.piesocket.com/v3/channel_1?api_key=oCdCMcMPQpbvNjUIzqtvF1d2X2okWpDQj4AwARJuAgtjhzKxVEjQU6IdCjwm&notify_self"
@@ -111,6 +111,7 @@ sealed class WoopMessage {
 
 data class Entity(
     val id: String,
+    val createdAt: OffsetDateTime,
     val data: Data,
     val tags: List<String>,
 ) {

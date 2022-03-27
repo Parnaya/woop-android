@@ -13,17 +13,7 @@ class WoopMessageSerializer(
     private val scheme: JSONSchema
 ) : JsonSerializer<WoopMessage> {
 
-    private fun Entity.serialize() = jsonObject {
-        add("id", id)
-        addArray("tags") {
-            tags.forEach(::add)
-        }
-        addObject("data") {
-            add("text", data.text)
-        }
-    }
-
-    override fun serialize(src: WoopMessage?, typeOfSrc: Type?, context: JsonSerializationContext?): JsonElement {
+    override fun serialize(src: WoopMessage, typeOfSrc: Type, context: JsonSerializationContext): JsonElement {
         src ?: return JsonNull.INSTANCE
 
         val jsonObject = jsonObject {
@@ -34,7 +24,7 @@ class WoopMessageSerializer(
                     is WoopMessage.Entities -> src.entities.forEach { entity ->
                         addObject {
                             add("type", WoopMessage.Insert)
-                            add("data", entity.serialize())
+                            add("data", context.serialize(entity))
                         }
                     }
                     is WoopMessage.Filter -> addObject {
