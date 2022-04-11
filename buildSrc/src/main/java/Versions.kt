@@ -59,6 +59,7 @@ object Versions {
         const val playServicesAuth = "19.2.0"
         const val playServicesAuthApiPhone = "17.5.1"
         const val jsonKotlinSchema = "0.32"
+        const val apacheCollections = "4.1"
         //Testing
         const val junit = "4.13"
         const val testCore = "1.3.0"

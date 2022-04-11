@@ -33,15 +33,15 @@ import java.net.URL
 import java.util.concurrent.TimeUnit
 
 
-class ServiceProvider(
+class WebsocketServiceProvider(
     private val assets: AssetManager,
 ) {
-    private val host = "jusp.me"
+//    private val host = "jusp.me"
 //        private val host = "localhost:1323"
-//    private val host = "10.10.13.154:1323"
+    private val host = "10.10.13.154:1323"
 
     private val url = "ws://${host}/ws"
-//    private val url = "wss://demo.piesocket.com/v3/channel_1?api_key=oCdCMcMPQpbvNjUIzqtvF1d2X2okWpDQj4AwARJuAgtjhzKxVEjQU6IdCjwm&notify_self"
+//    private val url = "wss://demo.piesocket.com/v3/channel_7?api_key=oCdCMcMPQpbvNjUIzqtvF1d2X2okWpDQj4AwARJuAgtjhzKxVEjQU6IdCjwm&notify_self"
     private val backoffStrategy = ExponentialWithJitterBackoffStrategy(5000, 5000)
     private val okHttpClient = OkHttpClient.Builder()
         .connectTimeout(10, TimeUnit.SECONDS)
@@ -66,7 +66,7 @@ class ServiceProvider(
         val schema = JSONSchema.parse(text)
 
         val gson = GsonBuilder()
-            .registerTypeAdapter(OffsetDateTime::class.java, OffsetDateTimeTypeAdapter.Iso().nullSafe())
+            .registerTypeAdapter(OffsetDateTime::class.java, OffsetDateTimeTypeAdapter().nullSafe())
             .registerTypeAdapter(OffsetTime::class.java, OffsetTimeTypeAdapter.Iso().nullSafe())
             .registerTypeAdapter(LocalDateTime::class.java, LocalDateTimeTypeAdapter.Iso().nullSafe())
             .registerTypeAdapter(LocalDate::class.java, LocalDateTypeAdapter.Iso().nullSafe())
@@ -103,9 +103,15 @@ sealed class WoopMessage {
         val entities: List<Entity>
     ) : WoopMessage()
 
+    data class Fetch(
+        val after: OffsetDateTime?,
+        val size: Int,
+    ): WoopMessage()
+
     companion object {
         const val Insert = "insert"
         const val Filter = "filters"
+        const val Fetch = "fetch"
     }
 }
 

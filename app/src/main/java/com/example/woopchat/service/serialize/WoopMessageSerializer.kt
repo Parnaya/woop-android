@@ -14,8 +14,6 @@ class WoopMessageSerializer(
 ) : JsonSerializer<WoopMessage> {
 
     override fun serialize(src: WoopMessage, typeOfSrc: Type, context: JsonSerializationContext): JsonElement {
-        src ?: return JsonNull.INSTANCE
-
         val jsonObject = jsonObject {
             add("id", Generator.randomString())
             add("createdAt", Instant.now().toString())
@@ -30,6 +28,10 @@ class WoopMessageSerializer(
                     is WoopMessage.Filter -> addObject {
                         add("type", WoopMessage.Filter)
                         add("data", src.filter)
+                    }
+                    is WoopMessage.Fetch -> addObject {
+                        add("type", WoopMessage.Fetch)
+                        add("data", context.serialize(src))
                     }
                 }
             }

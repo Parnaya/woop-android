@@ -16,20 +16,24 @@ class WoopMessageDeserializer(
     override fun deserialize(json: JsonElement, typeOfT: Type, context: JsonDeserializationContext): WoopMessage {
         val root = json as? JsonObject ?: throw IllegalArgumentException("Cannot deserialize Woop Message")
 
-        val res = scheme.validateBasic(root.toString())
-        if (!res.valid) Log.e(
-            "===JsonSchema===",
-            res.errors?.joinToString(" ==== ") { "${it.error} - ${it.instanceLocation}" }  ?: "null"
-        )
+//        val res = scheme.validateBasic(root.toString())
+//        if (!res.valid) Log.e(
+//            "===JsonSchema===",
+//            res.errors?.joinToString(" ==== ") { "${it.error} - ${it.instanceLocation}" }  ?: "null"
+//        )
 
         val entities = root.jsonArray("messages") {
-            context.deserialize<Entity>(this, Entity::class.java)
-            obj("data") {
-                context.deserialize<Entity>(this, Entity::class.java)
+//            context.deserialize<Entity>(this, Entity::class.java)
+            try {
+                obj("data") {
+                    context.deserialize<Entity>(this, Entity::class.java)
+                }
+            } catch (e: Throwable) {
+
             }
         }
 
-        return WoopMessage.Entities(entities)
+        return WoopMessage.Entities(entities.filterIsInstance<Entity>())
     }
 
     private fun JsonObject.str(name: String): String {

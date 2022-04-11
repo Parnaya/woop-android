@@ -120,7 +120,7 @@ fun logConnectionState(
                     Log.d("=======Connection", "OnConnectionFailed --> ${state.throwable}")
                 }
                 is WebSocket.Event.OnMessageReceived -> {
-                    Log.d("=======Connection", "OnMessageReceived  --> ${state.message}")
+//                    Log.d("=======Connection", "OnMessageReceived  --> ${state.message}")
                 }
             }
         }

@@ -49,6 +49,18 @@
               },
               {
                 "type": "string"
+              },
+              {
+                "type": "object",
+                "description": "fetch",
+                "properties": {
+                  "after": {
+                    "type": "string"
+                  },
+                  "size": {
+                    "type": "integer"
+                  }
+                }
               }
             ]
           }

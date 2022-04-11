@@ -64,7 +64,8 @@ sealed class Dependencies(
         object CoordinatorLayout : Libs("androidx.coordinatorlayout:coordinatorlayout:${Versions.Libs.coordinatorLayout}")
         object ViewPager2 : Libs("androidx.viewpager2:viewpager2:${Versions.Libs.viewPager2}")
 
-        //zoom image view
+        //collection
+        object ApacheCollections : Libs("org.apache.commons:commons-collections4:${Versions.Libs.apacheCollections}")
 
         //Compose Util
         object ComposeUtil : Libs("androidx.compose.ui:ui-util:${Versions.Libs.compose}")

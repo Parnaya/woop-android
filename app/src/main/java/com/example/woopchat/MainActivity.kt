@@ -14,20 +14,21 @@ import com.tinder.scarlet.lifecycle.android.AndroidLifecycle
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var service: WebsocketService// = scarlet.create<SocketService>()
-
     lateinit var vimo: MainVimo
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         vimo = MainVimo(application.assets, AndroidLifecycle.ofApplicationForeground(application))
-        vimo.onOpenedChat("/")
         ActivityMainBinding.inflate(layoutInflater).apply {
             val pagerAdapter = PagerAdapter(this@MainActivity)
-            pager.currentItem = 2
             pager.adapter = pagerAdapter
-            pager.registerOnPageChangeCallback(object: ViewPager2.OnPageChangeCallback() {
+            val page = 1
+            pager.setCurrentItem(page, false)
+            title.text = MainVimo.Screens[page].title
+            vimo.onOpenedChat(position = page)
+            pager.registerOnPageChangeCallback(object: ViewPager2.OnPageChangeCallback() { //TODO write better callback
                 override fun onPageSelected(position: Int) {
+                    vimo.onOpenedChat(position)
                     title.setTextWithAnimation(MainVimo.Screens[position].title, duration = 600)
                 }
             })
@@ -40,6 +41,9 @@ class MainActivity : AppCompatActivity() {
      */
     private inner class PagerAdapter(fa: FragmentActivity) : FragmentStateAdapter(fa) {
         override fun getItemCount(): Int = MainVimo.Screens.size
-        override fun createFragment(position: Int): Fragment = ChatFragment()
+        override fun createFragment(position: Int): Fragment = ChatFragment(
+            user = MainVimo.UserTag,
+            chat = MainVimo.Screens[position].id,
+        )
     }
 }

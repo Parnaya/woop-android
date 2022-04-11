@@ -1,15 +1,14 @@
 package com.example.woopchat
 
-import android.app.Application
 import android.content.res.AssetManager
 import android.util.Log
 import androidx.lifecycle.viewModelScope
 import com.example.woopchat.base.BaseVimo
 import com.example.woopchat.base.Generator
 import com.example.woopchat.coroutines.launchBg
-import com.example.woopchat.service.ChatProvider
 import com.example.woopchat.service.Entity
-import com.example.woopchat.service.ServiceProvider
+import com.example.woopchat.service.SocketUseCases
+import com.example.woopchat.service.WebsocketServiceProvider
 import com.tinder.scarlet.Lifecycle
 import kotlinx.coroutines.delay
 import org.threeten.bp.OffsetDateTime
@@ -18,49 +17,45 @@ class MainVimo(
     assets: AssetManager,
     lifecycle: Lifecycle,
 ) : BaseVimo() {
-    private val provider = ChatProvider(
+    val useCases = SocketUseCases(
         lifecycle = lifecycle,
-        scope = viewModelScope,
-        serviceProvider = ServiceProvider(assets),
+        scope = coroutineScope,
+        websocketServiceProvider = WebsocketServiceProvider(assets),
     )
 
-    fun onOpenedChat(name: String) {
+    fun onOpenedChat(position: Int) {
         //todo clear chat
         launchBg {
-            val filters = listOf(
-                "chat|$name",
-            )
-            provider.updateFilters(filters)
+            val filter = Screens[position].id
+            useCases.updateFilters(filter.let(::listOf))
         }
-        launchBg {
-            provider.onReceiveMessage { Log.d("MESSAGE", "haha, message received: $it") }
-        }
-        launchBg {
-            val user = Generator.randomString()
-            while (true) {
-                delay(10000)
-                provider.sendMessage(
-                    Entity(
-                        id = Generator.randomString(),
-                        createdAt = OffsetDateTime.now(),
-                        data = Entity.Data("some text"),
-                        tags = listOf(
-                            "user|$user",
-                            "chat|/second",
-                            "type|message",
-                        ),
-                    )
-                )
-            }
-        }
+//        launchBg {
+//            val user = Generator.randomString()
+//            while (true) {
+//                delay(10000)
+//                useCases.sendMessage(
+//                    Entity(
+//                        id = Generator.randomString(),
+//                        createdAt = OffsetDateTime.now(),
+//                        data = Entity.Data("some text"),
+//                        tags = listOf(
+//                            "user|$user",
+//                            "chat|/second",
+//                            "type|message",
+//                        ),
+//                    )
+//                )
+//            }
+//        }
     }
 
     companion object {
         val Screens = listOf(
-            Screen("e63d8997-88b8-4261-a19a-ca5ff887f14a", "Тет а тет"),
-            Screen("/", "Main"),
-            Screen("/second", "Second"),
+            Screen("chat|/e63d8997-88b8-4261-a19a-ca5ff887f14a", "Тет а тет"), //TODO save id in SP
+            Screen("chat|/", "Main"),
+            Screen("chat|/second", "Second"),
         )
+        val UserTag = "user|${Generator.randomString()}"
     }
 }
 

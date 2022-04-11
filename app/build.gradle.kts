@@ -105,6 +105,7 @@ dependencies {
         Libs.FragmentKtx,
         Libs.Threetenabp,
         Libs.JsonKotlinSchema,
+        Libs.ApacheCollections,
     )
 }
 
