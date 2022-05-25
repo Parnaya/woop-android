@@ -1,29 +1,39 @@
 package com.example.woopchat.service
 
+import com.example.woopchat.coroutines.CoroutineScopes
+import com.example.woopchat.coroutines.Dispatchers
 import com.tinder.scarlet.Lifecycle
 import com.tinder.scarlet.WebSocket
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.flow.SharingStarted.Companion.Lazily
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import org.threeten.bp.OffsetDateTime
+import javax.inject.Inject
+
+interface IChatUseCases {
+    suspend fun onUpdates(action: suspend (List<Entity>) -> Unit)
+    suspend fun sendMessage(entity: Entity)
+    suspend fun loadMessages()
+    suspend fun ensurePagination(): Boolean
+}
 
 class ChatUseCases(
     private val userTag: String,
     private val chatTag: String,
     private val socketUseCases: SocketUseCases,
-) {
+): IChatUseCases {
 
+    private var mutex = Mutex()
     private var lastPageKey: OffsetDateTime? = null
-        @Synchronized get
-        @Synchronized set
 
     private val cache = MessagesCollection<String, Entity> { it.id }
 
-    suspend fun onUpdates(action: suspend (List<Entity>) -> Unit) {
+    override suspend fun onUpdates(action: suspend (List<Entity>) -> Unit) {
         socketUseCases.entitiesFlow
             .filter { it.entities.first().tags.contains(chatTag) }
             .collect { msg ->
@@ -36,20 +46,22 @@ class ChatUseCases(
             }
     }
 
-    suspend fun sendMessage(entity: Entity) {
+    override suspend fun sendMessage(entity: Entity) {
         cache.put(entity)
         socketUseCases.sendMessage(entity)
     }
 
-    suspend fun loadMessages() {
+    override suspend fun loadMessages() {
         socketUseCases.fetch(last = cache.first().createdAt)
     }
 
-    fun ensurePagination(): Boolean {
-        if (lastPageKey != null) {
-            if (cache.first().createdAt == lastPageKey) return false
+    override suspend fun ensurePagination(): Boolean {
+        mutex.withLock {
+            if (lastPageKey != null) {
+                if (cache.first().createdAt == lastPageKey) return false
+            }
+            lastPageKey = cache.first().createdAt
         }
-        lastPageKey = cache.first().createdAt
         return true
     }
 
@@ -58,30 +70,35 @@ class ChatUseCases(
     }
 }
 
-class SocketUseCases(
-    private val lifecycle: Lifecycle,
-    private val scope: CoroutineScope,
-    private val websocketServiceProvider: WebsocketServiceProvider,
-) {
+interface ISocketUseCases {
+    val entitiesFlow: SharedFlow<WoopMessage.Entities>
+
+    suspend fun updateFilters(filters: List<String>)
+    suspend fun fetch(last: OffsetDateTime = OffsetDateTime.now(), size: Int = 50)
+    suspend fun sendMessage(entity: Entity)
+}
+
+class SocketUseCases @Inject constructor(
+    private val service: WebsocketService,
+) : ISocketUseCases {
 
     private val updateFiltersChannel: Channel<WoopMessage> = Channel()
-    private val service = websocketServiceProvider.getService(lifecycle)
 
-    val entitiesFlow = service
+    override val entitiesFlow = service
         .observeMessages()
         .receiveAsFlow()
         .filterIsInstance<WoopMessage.Entities>()
-        .shareIn(scope, Lazily)
+        .shareIn(CoroutineScopes.io, Lazily)
 
     init {
-        scope.launch(Dispatchers.IO) {
+        CoroutineScopes.io.launch {
             val channel = service.observeWebSocketEvent()
             while (true) {
                 val state = channel.receive()
                 var job: Job? = null
 
                 when (state) {
-                    is WebSocket.Event.OnConnectionOpened<*> -> job = scope.launch {
+                    is WebSocket.Event.OnConnectionOpened<*> -> job = CoroutineScopes.io.launch {
                         for (msg in updateFiltersChannel) {
                             service.sendMessage(msg)
                             fetch()
@@ -99,17 +116,17 @@ class SocketUseCases(
         }
     }
 
-    suspend fun updateFilters(filters: List<String>) {
+    override suspend fun updateFilters(filters: List<String>) {
         updateFiltersChannel.send(filters.revert())
     }
 
-    suspend fun fetch(last: OffsetDateTime = OffsetDateTime.now(), size: Int = 50) {
+    override suspend fun fetch(last: OffsetDateTime, size: Int) {
         service.sendMessage(
             WoopMessage.Fetch(last, size)
         )
     }
 
-    suspend fun sendMessage(entity: Entity) {
+    override suspend fun sendMessage(entity: Entity) {
         service.sendMessage(
             entity.revert()
         )

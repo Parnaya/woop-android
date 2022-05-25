@@ -6,32 +6,37 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.createViewModelLazy
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
+import com.example.woopchat.base.assistedVimo
 import com.example.woopchat.databinding.FragmentChatBinding
 import com.example.woopchat.databinding.ItemLeftMessageBinding
 import com.example.woopchat.databinding.ItemRightMessageBinding
 import com.example.woopchat.recycler.*
 import com.example.woopchat.recycler.diff.Diffable
-import com.example.woopchat.recycler.listener.ScrollToEndListener
 import com.example.woopchat.recycler.listener.ScrollToStartListener
+import javax.inject.Inject
 
 
 class ChatFragment : Fragment() {
 
-    lateinit var vimo: ChatVimo // TODO inject vimo
+    @Inject
+    lateinit var fac: ChatVimo.Factory
 
-    private val userTag by lazy { arguments?.getString(UserTag)!! }
-    private val chatTag by lazy { arguments?.getString(ChatTag)!! }
+    val vimo: ChatVimo by assistedVimo {
+        fac.create(
+            it?.getString(UserTag)!!,
+            it.getString(ChatTag)!!,
+        )
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        val mainVimo = (activity as MainActivity).vimo
-        vimo = ChatVimo(
-            userTag = userTag,
-            chatTag = chatTag,
-            socketUseCases = mainVimo.useCases,
-        )
+        WoopApp.ChatComponent.inject(this)
+
         return FragmentChatBinding.inflate(inflater, container, false).apply {
             list.adapter = AdapterWithVerticalDividers(
                 requireContext(),

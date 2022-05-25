@@ -1,24 +1,26 @@
 package com.example.woopchat
 
+import android.app.Activity
 import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
+import com.example.woopchat.base.BaseVimo
+import com.example.woopchat.base.vimo
 import com.example.woopchat.databinding.ActivityMainBinding
-import com.example.woopchat.service.WebsocketService
 import com.example.woopchat.utils.setTextWithAnimation
-import com.tinder.scarlet.lifecycle.android.AndroidLifecycle
-
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var vimo: MainVimo
+    private val vimo: MainVimo by vimo()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        vimo = MainVimo(application.assets, AndroidLifecycle.ofApplicationForeground(application))
+
         ActivityMainBinding.inflate(layoutInflater).apply {
             val pagerAdapter = PagerAdapter(this@MainActivity)
             pager.adapter = pagerAdapter

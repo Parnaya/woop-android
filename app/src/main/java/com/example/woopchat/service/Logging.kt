@@ -1,13 +1,13 @@
-package com.example.woopchat
+package com.example.woopchat.service
 
 import android.util.Log
+import com.example.woopchat.coroutines.Dispatchers
 import com.tinder.scarlet.Lifecycle
 import com.tinder.scarlet.Message
 import com.tinder.scarlet.MessageAdapter
 import com.tinder.scarlet.WebSocket
 import io.reactivex.subscribers.DisposableSubscriber
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.ReceiveChannel
 import kotlinx.coroutines.launch
 import okhttp3.Interceptor
@@ -17,7 +17,7 @@ import java.lang.reflect.Type
 import java.util.concurrent.atomic.AtomicInteger
 
 class LoggingInterceptor(
-    isEnabled: Boolean
+    isEnabled: Boolean = true,
 ) : Interceptor {
 
     private val interceptor = HttpLoggingInterceptor(
@@ -103,7 +103,7 @@ fun logConnectionState(
     scope: CoroutineScope,
     channel: ReceiveChannel<WebSocket.Event>,
 ) {
-    scope.launch(Dispatchers.IO) {
+    scope.launch(Dispatchers.io) {
         while (true) {
             val state = channel.receive()
             when (state) {

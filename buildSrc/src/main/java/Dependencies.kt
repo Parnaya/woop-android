@@ -40,6 +40,18 @@ sealed class Dependencies(
         object ScarletAdapterGson: Libs("com.tinder.scarlet:message-adapter-gson:${Versions.Libs.scarlet}")
         object JsonKotlinSchema: Libs("net.pwall.json:json-kotlin-schema:${Versions.Libs.jsonKotlinSchema}")
 
+        //work manager
+        object WorkRuntimeKtx: Libs("androidx.work:work-runtime:${Versions.Libs.workManager}")
+        object WorkGsm: Libs("androidx.work:work-gcm:${Versions.Libs.workManager}")
+        object WorkMultiprocess: Libs("androidx.work:work-multiprocess:${Versions.Libs.workManager}")
+
+        //dagger
+        object Dagger: Libs("com.google.dagger:dagger:${Versions.Libs.dagger}")
+        object DaggerCompiler: Libs("com.google.dagger:dagger-compiler:${Versions.Libs.dagger}")
+        object DaggerAndroid: Libs("com.google.dagger:dagger-android:${Versions.Libs.dagger}")
+        object DaggerAndroidSupport: Libs("com.google.dagger:dagger-android-support:${Versions.Libs.dagger}")
+        object DaggerAndroidProcessor: Libs("com.google.dagger:dagger-android-processor:${Versions.Libs.dagger}")
+
         //protobuf
         object Protoc: Libs("com.google.protobuf:protoc:${Versions.Libs.protobuf}")
         object ProtobufJava: Libs("com.google.protobuf:protobuf-java:${Versions.Libs.protobuf}")

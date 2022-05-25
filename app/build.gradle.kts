@@ -1,11 +1,12 @@
 @file:Suppress("UnstableApiUsage")
-import Dependencies.*
+import Dependencies.Libs
 import com.android.build.api.variant.impl.VariantOutputImpl
 
 plugins {
     androidApplication()
     kotlinAndroid()
     modulePlugin()
+    kapt()
 }
 
 println("build arguments: $BuildArgs")
@@ -41,6 +42,7 @@ android {
     sourceSets {
         getByName("main") {
             java.srcDir("src/main/java")
+            aidl.srcDir("src/main/java")
         }
     }
 
@@ -106,6 +108,16 @@ dependencies {
         Libs.Threetenabp,
         Libs.JsonKotlinSchema,
         Libs.ApacheCollections,
+        Libs.WorkGsm,
+        Libs.WorkMultiprocess,
+        Libs.WorkRuntimeKtx,
+        Libs.Dagger,
+        Libs.DaggerAndroid,
+        Libs.DaggerAndroidSupport,
+    )
+    kapt(
+        Libs.DaggerCompiler,
+        Libs.DaggerAndroidProcessor,
     )
 }
 

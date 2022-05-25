@@ -1,10 +1,6 @@
 package com.example.woopchat.service
 
 import android.content.res.AssetManager
-import com.example.woopchat.LifecycleLoggerSubscriber
-import com.example.woopchat.LoggingInterceptor
-import com.example.woopchat.LoggingMessageAdapter
-import com.example.woopchat.logConnectionState
 import com.example.woopchat.service.adapter.LocalDateTimeTypeAdapter
 import com.example.woopchat.service.adapter.LocalDateTypeAdapter
 import com.example.woopchat.service.adapter.OffsetDateTimeTypeAdapter
@@ -25,15 +21,10 @@ import org.threeten.bp.LocalDate
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.OffsetDateTime
 import org.threeten.bp.OffsetTime
-import java.io.BufferedInputStream
-import java.io.BufferedReader
-import java.io.File
-import java.io.InputStreamReader
-import java.net.URL
 import java.util.concurrent.TimeUnit
 
 
-class WebsocketServiceProvider(
+class WebsocketServiceProvider (
     private val assets: AssetManager,
 ) {
 //    private val host = "jusp.me"
@@ -74,7 +65,7 @@ class WebsocketServiceProvider(
             .registerTypeAdapter(WoopMessage::class.java, WoopMessageDeserializer(schema))
             .create()
 
-        val scarlet = Scarlet.Builder()
+        val scarlet: Scarlet = Scarlet.Builder()
             .webSocketFactory(okHttpClient.newWebSocketFactory(url))
             .addMessageAdapterFactory(
                 LoggingMessageAdapter.Factory(

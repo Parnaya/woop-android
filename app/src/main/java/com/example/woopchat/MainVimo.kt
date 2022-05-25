@@ -12,16 +12,11 @@ import com.example.woopchat.service.WebsocketServiceProvider
 import com.tinder.scarlet.Lifecycle
 import kotlinx.coroutines.delay
 import org.threeten.bp.OffsetDateTime
+import javax.inject.Inject
 
-class MainVimo(
-    assets: AssetManager,
-    lifecycle: Lifecycle,
+class MainVimo @Inject constructor(
+    private val useCases: SocketUseCases,
 ) : BaseVimo() {
-    val useCases = SocketUseCases(
-        lifecycle = lifecycle,
-        scope = coroutineScope,
-        websocketServiceProvider = WebsocketServiceProvider(assets),
-    )
 
     fun onOpenedChat(position: Int) {
         //todo clear chat

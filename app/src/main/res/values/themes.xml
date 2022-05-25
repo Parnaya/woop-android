@@ -1,5 +1,4 @@
-<resources xmlns:tools="http://schemas.android.com/tools">
-
+<resources>
 
     <style name="Base" />
 
@@ -9,7 +8,6 @@
         <item name="android:windowBackground">?colorBackground</item>
         <item name="android:statusBarColor">?colorBackground</item>
     </style>
-
 
     <style name="Theme.WoopChat" parent="Base.Theme.WoopChat" />
 </resources>

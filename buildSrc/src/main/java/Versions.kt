@@ -60,6 +60,7 @@ object Versions {
         const val playServicesAuthApiPhone = "17.5.1"
         const val jsonKotlinSchema = "0.32"
         const val apacheCollections = "4.1"
+        const val dagger = "2.41"
         //Testing
         const val junit = "4.13"
         const val testCore = "1.3.0"
