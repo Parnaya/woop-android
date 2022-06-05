@@ -24,6 +24,8 @@ import com.tinder.streamadapter.coroutines.CoroutinesStreamAdapterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import net.pwall.json.schema.JSONSchema
@@ -40,15 +42,16 @@ import javax.inject.Singleton
 //AppConfig
 
 @Module
+@InstallIn(SingletonComponent::class)
 class NetworkModule {
     @Provides
-    @Singleton
+    @Reusable
     fun provideJsonSchema(assets: AssetManager): JSONSchema = JSONSchema.parse(
         assets.open("schema/woop-socket-message.json").bufferedReader().readText()
     )
 
     @Provides
-    @Singleton
+    @Reusable
     fun provideGson(schema: JSONSchema): Gson = GsonBuilder()
         .registerTypeAdapter(OffsetDateTime::class.java, OffsetDateTimeTypeAdapter().nullSafe())
         .registerTypeAdapter(OffsetTime::class.java, OffsetTimeTypeAdapter.Iso().nullSafe())
@@ -73,10 +76,6 @@ class NetworkModule {
 
     @Provides
     @Reusable
-    fun provideLoggingInterceptor(): LoggingInterceptor = LoggingInterceptor()
-
-    @Provides
-    @Singleton
     fun provideOkhttpClient(config: AppConfig): OkHttpClient = OkHttpClient.Builder()
         .connectTimeout(10, TimeUnit.SECONDS)
         .readTimeout(10, TimeUnit.SECONDS)

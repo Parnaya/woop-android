@@ -35,3 +35,7 @@ fun PluginDependenciesSpec.crashlytics() {
 fun PluginDependenciesSpec.protobuf() {
     id("com.google.protobuf")
 }
+
+fun PluginDependenciesSpec.hilt() {
+    id("dagger.hilt.android.plugin")
+}

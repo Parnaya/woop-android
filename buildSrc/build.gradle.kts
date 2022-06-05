@@ -18,7 +18,7 @@ repositories {
 
 dependencies {
     compileOnly(gradleApi())
-    implementation("com.android.tools.build:gradle:7.1.2")
+    implementation("com.android.tools.build:gradle:7.2.1")
     implementation(kotlin("gradle-plugin", "1.5.31"))
 }
 
@@ -30,6 +30,7 @@ configurations.all {
             "kotlin-stdlib-common",
             "kotlin-stdlib-jdk7",
             "kotlin-stdlib-jdk8" -> useVersion("1.5.31")
+            "javapoet" -> useVersion("1.13.0")
         }
     }
 }

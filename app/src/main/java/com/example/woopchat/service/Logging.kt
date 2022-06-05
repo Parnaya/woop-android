@@ -6,6 +6,7 @@ import com.tinder.scarlet.Lifecycle
 import com.tinder.scarlet.Message
 import com.tinder.scarlet.MessageAdapter
 import com.tinder.scarlet.WebSocket
+import dagger.Reusable
 import io.reactivex.subscribers.DisposableSubscriber
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.channels.ReceiveChannel
@@ -15,6 +16,7 @@ import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import java.lang.reflect.Type
 import java.util.concurrent.atomic.AtomicInteger
+import javax.inject.Inject
 
 class LoggingInterceptor(
     isEnabled: Boolean = true,

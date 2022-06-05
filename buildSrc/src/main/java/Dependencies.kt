@@ -51,6 +51,8 @@ sealed class Dependencies(
         object DaggerAndroid: Libs("com.google.dagger:dagger-android:${Versions.Libs.dagger}")
         object DaggerAndroidSupport: Libs("com.google.dagger:dagger-android-support:${Versions.Libs.dagger}")
         object DaggerAndroidProcessor: Libs("com.google.dagger:dagger-android-processor:${Versions.Libs.dagger}")
+        object HiltAndroid: Libs("com.google.dagger:hilt-android:${Versions.Libs.dagger}")
+        object HiltCompiler: Libs("com.google.dagger:hilt-compiler:${Versions.Libs.dagger}")
 
         //protobuf
         object Protoc: Libs("com.google.protobuf:protoc:${Versions.Libs.protobuf}")

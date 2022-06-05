@@ -6,37 +6,35 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.createViewModelLazy
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
-import com.example.woopchat.base.assistedVimo
 import com.example.woopchat.databinding.FragmentChatBinding
 import com.example.woopchat.databinding.ItemLeftMessageBinding
 import com.example.woopchat.databinding.ItemRightMessageBinding
+import com.example.woopchat.di.B
 import com.example.woopchat.recycler.*
 import com.example.woopchat.recycler.diff.Diffable
 import com.example.woopchat.recycler.listener.ScrollToStartListener
-import javax.inject.Inject
+import dagger.hilt.EntryPoint
+import dagger.hilt.EntryPoints
+import dagger.hilt.InstallIn
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.components.FragmentComponent
 
-
+@AndroidEntryPoint
 class ChatFragment : Fragment() {
+    val vimo: ChatVimo by viewModels()
 
-    @Inject
-    lateinit var fac: ChatVimo.Factory
-
-    val vimo: ChatVimo by assistedVimo {
-        fac.create(
-            it?.getString(UserTag)!!,
-            it.getString(ChatTag)!!,
-        )
+    @EntryPoint
+    @InstallIn(FragmentComponent::class)
+    interface FooBarInterface {
+        fun getB(): B
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        WoopApp.ChatComponent.inject(this)
-
+        val b = EntryPoints.get(this, FooBarInterface::class.java).getB()
         return FragmentChatBinding.inflate(inflater, container, false).apply {
             list.adapter = AdapterWithVerticalDividers(
                 requireContext(),

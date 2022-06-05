@@ -25,7 +25,7 @@ interface IChatUseCases {
 class ChatUseCases(
     private val userTag: String,
     private val chatTag: String,
-    private val socketUseCases: SocketUseCases,
+    private val socketUseCases: ISocketUseCases,
 ): IChatUseCases {
 
     private var mutex = Mutex()

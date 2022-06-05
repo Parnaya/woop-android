@@ -1,29 +1,33 @@
 package com.example.woopchat
 
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.SavedStateHandle
 import com.example.woopchat.base.BaseVimo
 import com.example.woopchat.base.Generator
 import com.example.woopchat.coroutines.launchBg
-import com.example.woopchat.di.ChatScope
-import com.example.woopchat.di.VimoFactory
+import com.example.woopchat.di.A
+import com.example.woopchat.di.B
 import com.example.woopchat.recycler.diff.Diffable
 import com.example.woopchat.service.ChatUseCases
 import com.example.woopchat.service.Entity
-import com.example.woopchat.service.SocketUseCases
+import com.example.woopchat.service.ISocketUseCases
 import com.example.woopchat.utils.LiveState
-import dagger.assisted.Assisted
-import dagger.assisted.AssistedFactory
-import dagger.assisted.AssistedInject
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import org.threeten.bp.OffsetDateTime
+import javax.inject.Inject
 
-class ChatVimo @AssistedInject constructor(
-    @Assisted("userTag") private val userTag: String,
-    @Assisted("chatTag") private val chatTag: String,
-    socketUseCases: SocketUseCases,
+@HiltViewModel
+class ChatVimo @Inject constructor(
+    b: B,
+    socketUseCases: ISocketUseCases,
+    savedStateHandle: SavedStateHandle,
 ) : BaseVimo(),
     LiveState<ChatState> by LiveState() {
 
+    private val userTag: String = ""
+    private val chatTag: String = ""
+
+    //Todo inject that dependencies
     private val useCases = ChatUseCases(userTag, chatTag, socketUseCases)
     private val converter = ChatVistConverter(userTag)
 
@@ -53,14 +57,6 @@ class ChatVimo @AssistedInject constructor(
         if (res) {
             useCases.loadMessages()
         }
-    }
-
-    @AssistedFactory
-    interface Factory {
-        fun create(
-            @Assisted("userTag") userTag: String,
-            @Assisted("chatTag") chatTag: String,
-        ): ChatVimo
     }
 }
 

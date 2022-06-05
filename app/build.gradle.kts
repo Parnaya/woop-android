@@ -7,6 +7,7 @@ plugins {
     kotlinAndroid()
     modulePlugin()
     kapt()
+    hilt()
 }
 
 println("build arguments: $BuildArgs")
@@ -22,6 +23,7 @@ android {
 
     buildTypes {
         getByName("debug") {
+            javaCompileOptions.annotationProcessorOptions.arguments["dagger.hilt.disableModulesHaveInstallInCheck"] = "true"
             isDebuggable = true
             applicationIdSuffix = ".dev"
             resValue("bool", "is_debug", "true")
@@ -114,11 +116,18 @@ dependencies {
         Libs.Dagger,
         Libs.DaggerAndroid,
         Libs.DaggerAndroidSupport,
+        Libs.HiltAndroid,
+        Libs.JavaPoet,
     )
     kapt(
         Libs.DaggerCompiler,
         Libs.DaggerAndroidProcessor,
+        Libs.HiltCompiler,
     )
+}
+
+hilt {
+    enableAggregatingTask = true
 }
 
 println(System.getenv())

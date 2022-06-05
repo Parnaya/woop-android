@@ -1,21 +1,15 @@
 package com.example.woopchat
 
-import android.content.res.AssetManager
-import android.util.Log
-import androidx.lifecycle.viewModelScope
 import com.example.woopchat.base.BaseVimo
 import com.example.woopchat.base.Generator
 import com.example.woopchat.coroutines.launchBg
-import com.example.woopchat.service.Entity
-import com.example.woopchat.service.SocketUseCases
-import com.example.woopchat.service.WebsocketServiceProvider
-import com.tinder.scarlet.Lifecycle
-import kotlinx.coroutines.delay
-import org.threeten.bp.OffsetDateTime
+import com.example.woopchat.service.ISocketUseCases
+import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
+@HiltViewModel
 class MainVimo @Inject constructor(
-    private val useCases: SocketUseCases,
+    private val useCases: ISocketUseCases,
 ) : BaseVimo() {
 
     fun onOpenedChat(position: Int) {

@@ -9,14 +9,14 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
-import com.example.woopchat.base.BaseVimo
-import com.example.woopchat.base.vimo
 import com.example.woopchat.databinding.ActivityMainBinding
 import com.example.woopchat.utils.setTextWithAnimation
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
 
-    private val vimo: MainVimo by vimo()
+    private val vimo: MainVimo by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
