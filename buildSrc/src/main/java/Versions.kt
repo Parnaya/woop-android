@@ -4,7 +4,7 @@ object Versions {
 
     object Libs {
         //Kotlin
-        const val coroutines = "1.5.1"
+        const val coroutines = "1.6.2"
         //Android Jetpack
         const val annotation = "1.3.0"
         const val appcompat = "1.4.0"

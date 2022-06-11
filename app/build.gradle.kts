@@ -1,5 +1,5 @@
 @file:Suppress("UnstableApiUsage")
-import Dependencies.Libs
+import Dependencies.*
 import com.android.build.api.variant.impl.VariantOutputImpl
 
 plugins {
@@ -88,6 +88,7 @@ androidComponents.onVariants { variant ->
 
 dependencies {
     implementation(
+        Features.OtherModule,
         Libs.CoreKtx,
         Libs.Appcompat,
         Libs.Material,
@@ -117,7 +118,6 @@ dependencies {
         Libs.DaggerAndroid,
         Libs.DaggerAndroidSupport,
         Libs.HiltAndroid,
-        Libs.JavaPoet,
     )
     kapt(
         Libs.DaggerCompiler,

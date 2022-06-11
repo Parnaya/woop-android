@@ -1,5 +1,6 @@
 package com.example.woopchat
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -35,12 +36,15 @@ class ChatFragment : Fragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val b = EntryPoints.get(this, FooBarInterface::class.java).getB()
+
+        context?.openFileOutput("file_name", Context.MODE_PRIVATE)
         return FragmentChatBinding.inflate(inflater, container, false).apply {
             list.adapter = AdapterWithVerticalDividers(
                 requireContext(),
                 LeftMessageAdapter(),
                 RightMessageAdapter(),
             )
+
             list.setHasFixedSize(false)
             list.disableChangeAnimations()
             val linearLayoutManager = LinearLayoutManager(requireContext())

@@ -10,7 +10,9 @@ sealed class Dependencies(
 
     sealed class Widgets(path: String) : Dependencies(path) {}
 
-    sealed class Features(path: String) : Dependencies(path) {}
+    sealed class Features(path: String) : Dependencies(path) {
+        object OtherModule : Features(":other-module")
+    }
 
     sealed class Libs(path: String, configuration: (ExternalModuleDependency.() -> Unit)? = null) : Dependencies(path, configuration) {
         //core
